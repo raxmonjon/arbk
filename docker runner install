@@ -3,3 +3,9 @@ curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/s
 yum install gitlab-runner
 gitlab-runner register
 docker login gitlabregistry.sud.uz
+gitlab-runner list
+
+usermod -aG docker gitlab-runner
+service docker restart
+
+gitlab-runner unregister --url https://gitlab.com/ --token some-token-goes-here
