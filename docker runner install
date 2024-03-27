@@ -1,0 +1,4 @@
+yum install -y curl
+curl -L "https://packages.gitlab.com/install/repositories/runner/gitlab-runner/script.rpm.sh" | sudo bash
+gitlab-runner register
+  
