@@ -1,0 +1,14 @@
+Backup:
+sudo -u postgres pg_dumpall -g > /tmp/globals.sql
+sudo -u postgres pg_dump -d justice --create -Fc > /tmp/backup_dump.gz
+
+Restore:
+sudo -u postgres createdb justice
+sudo -u postgres psql < /tmp/globals.sql
+sudo -u postgres pg_restore -d justice -j 10 /tmp/backup_dump.gz
+
+sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'password';"
+sudo -u postgres psql -c "ALTER USER supremecourt PASSWORD 'password';"
+sudo -u postgres psql -c "ALTER USER justice PASSWORD 'password';"
+
+
