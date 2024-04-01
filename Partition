@@ -1,1 +1,71 @@
-61b37735-0763-4118-b9da-8c555ff34f35
+case_id = e8c3d719-292c-4829-8bfc-f3d9f521d083
+
+cd /usr/share/postgresql/16/contrib/
+git clone https://github.com/pgpartman/pg_partman.git
+cd pg_partman/
+apt install make
+make PG_CONFIG=/usr/lib/postgresql/16/bin/pg_config NO_BGW=1
+or:
+wget https://github.com/pgpartman/pg_partman/archive/refs/tags/v5.0.1.zip
+ls -ltra v5.0.1.zip
+apt-get install unzip
+unzip v5.0.1.zip
+cd pg_partman-5.0.1/
+make
+make install
+apt install postgresql-server-dev-16
+
+CREATE SCHEMA partman;
+CREATE EXTENSION pg_partman SCHEMA partman;
+CREATE ROLE pgpartman_role WITH LOGIN;
+CREATE USER pgpartman_user;
+
+systemctl restart postgresql@16-main.service
+
+{
+where option can be:
+
+      SUPERUSER | NOSUPERUSER
+    | CREATEDB | NOCREATEDB
+    | CREATEROLE | NOCREATEROLE
+    | INHERIT | NOINHERIT
+    | LOGIN | NOLOGIN
+    | REPLICATION | NOREPLICATION
+    | BYPASSRLS | NOBYPASSRLS
+    | CONNECTION LIMIT connlimit
+    | [ ENCRYPTED ] PASSWORD 'password' | PASSWORD NULL
+    | VALID UNTIL 'timestamp'
+    | IN ROLE role_name [, ...]
+    | IN GROUP role_name [, ...]
+    | ROLE role_name [, ...]
+    | ADMIN role_name [, ...]
+    | USER role_name [, ...]
+    | SYSID uid
+}
+
+
+
+
+
+CREATE TABLE sales (
+    id BIGINT GENERATED ALWAYS AS IDENTITY,
+    date DATE NOT NULL,
+    store_id INTEGER NOT NULL,
+    amount NUMERIC NOT NULL
+)
+PARTITION BY RANGE (date);
+
+-- Install the pg_partman extension
+CREATE SCHEMA partman;
+CREATE EXTENSION pg_partman WITH SCHEMA partman;
+
+-- Create a partitioned table based on time intervals
+SELECT partman.create_parent('public.sales', 'date', 'native', 'monthly', p_premake := 2);
+-- Set retention policy
+UPDATE partman.part_config  SET retention = '12 month', retention_keep_table=false WHERE parent_table='public.sales';
+
+-- auto trigger maintenance(partition creation and retention) using pg_cron
+CREATE EXTENSION pg_cron;
+SELECT cron.schedule('0 0 1 * *', $$SELECT partman.run_maintenance();$$);
+
+
