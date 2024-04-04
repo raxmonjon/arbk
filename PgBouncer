@@ -1,0 +1,18 @@
+sudo apt-get install pgbouncer
+
+vi /etc/pgbouncer/pgbouncer.ini
+add params:
+[databases]
+* = host=localhost port=5432
+pool_mode=transaction
+listen_addr = *
+admin_user = admin_pgbouncer
+max_client_conn = 5000
+
+Echo md5:
+echo "md5"$(echo -n 'justicejustice' | md5sum | awk ' { print $1 } ')
+
+Add user:
+vi userlist.txt
+"my_db_user" "md5badc318d987f61146c6ad8e15d84a111"
+
