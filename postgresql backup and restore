@@ -15,3 +15,12 @@ sudo -u postgres psql -c "ALTER USER supremecourt PASSWORD 'password';"
 sudo -u postgres psql -c "ALTER USER justice PASSWORD 'password';"
 
 
+su - postgres
+rm -rf /var/lib/postgresql/16/main/*
+pg_basebackup -R -h 10.10.10.209 -p 5433 -U rep_user -D /var/lib/postgresql/16/main -P
+
+/etc/postgresql/16/main/postgresql.conf
+
+ systemctl status postgresql
+ systemctl status postgresql@16-main.service
+
