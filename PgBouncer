@@ -10,9 +10,21 @@ admin_user = admin_pgbouncer
 max_client_conn = 5000
 
 Echo md5:
-echo "md5"$(echo -n 'justicejustice' | md5sum | awk ' { print $1 } ')
+echo "md5"$(echo -n 'my_db_usermy_db_pass' | md5sum | awk ' { print $1 } ')
+or 
+"my_db_user" "SCRAM-SHA-256$4096:lLN4+i05+kpeffD4s3rRiw==$Oq62iUGamAaF5cpB+agWV4u3xfc5cZCRtvMhmA+Zm3E=:hHkCesEi0p0wLWk1uUEeTtJTYLXHKDLdy2te3VAOe8s="
+
+Service:
+vi /usr/lib/systemd/system/pgbouncer.service
 
 Add user:
 vi userlist.txt
 "my_db_user" "md5badc318d987f61146c6ad8e15d84a111"
+
+Pgbench Load add:
+apt-get install postgresql-contrib
+sudo service pgbouncer restart
+pgbench -i -s 50 justice -h 127.0.0.1 -p 5432 -U justice
+su - postgres
+pgbench -c 1000 -T 60 justice -h 127.0.0.1 -p 5432 -U justice
 
