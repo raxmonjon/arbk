@@ -9,3 +9,11 @@ usermod -aG docker gitlab-runner
 service docker restart
 
 gitlab-runner unregister --url https://gitlab.com/ --token some-token-goes-here
+
+gitlab-runner list
+#13 (cjAzbouuC) - 10.10.10.212 EDMS
+#10 (QUEETvQma) - 10.10.10.33  Adolat
+#6 (9EP3Q4m-1)  - 10.10.10.75  Adolat
+
+
+
