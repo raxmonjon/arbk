@@ -1,0 +1,15 @@
+apt update
+apt install -y pgcat
+vi /etc/pgcat.toml
+service pgcat start
+vi /etc/systemd/system/pgcat.service
+
+--add log path to service
+StandardOutput=file:/var/log/postgresql/pg_cat_out.log
+StandardError=file:/var/log/postgresql/pg_cat_err.log
+
+systemctl daemon-reload
+service pgcat restart
+
+-- view log
+journalctl -e -u pgcat.service
