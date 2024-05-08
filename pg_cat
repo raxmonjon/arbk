@@ -12,4 +12,6 @@ systemctl daemon-reload
 service pgcat restart
 
 -- view log
+tail -f /var/log/postgresql/pg_cat_err.log --lines 100
+tail -f /var/log/postgresql/pg_cat_out.log --lines 100
 journalctl -e -u pgcat.service
